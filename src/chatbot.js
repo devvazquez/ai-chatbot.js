@@ -71,7 +71,7 @@ class AIChatbot extends HTMLElement {
       const text = input.value.trim();
       if (!text) return;
       this.messages.push({ from: 'user', text });
-      this.loading = false; // No mostrar animación de carga
+      this.loading = false; 
       this.render();
       input.value = '';
       try {
