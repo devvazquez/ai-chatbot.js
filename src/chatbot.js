@@ -6,6 +6,7 @@ class AIChatbot extends HTMLElement {
       this.messages = [];
       this.loading = false;
       this.sessionId = this.generateSessionId();
+      this._justOpened = false; // Nueva bandera para controlar la animación
     }
   
     generateSessionId() {
@@ -51,7 +52,10 @@ class AIChatbot extends HTMLElement {
     }
   
     toggleChat() {
+      const wasClosed = !this.isOpen;
       this.isOpen = !this.isOpen;
+      // Solo activar animación si se está abriendo
+      if (this.isOpen && wasClosed) this._justOpened = true;
       this.render();
       if (this.isOpen) {
         setTimeout(() => {
@@ -67,7 +71,7 @@ class AIChatbot extends HTMLElement {
       const text = input.value.trim();
       if (!text) return;
       this.messages.push({ from: 'user', text });
-      this.loading = true;
+      this.loading = false; // No mostrar animación de carga
       this.render();
       input.value = '';
       try {
@@ -81,7 +85,7 @@ class AIChatbot extends HTMLElement {
           })
         });
         let data = await res.json();
-        let botMsg = data.reply || data.message || JSON.stringify(data);
+        let botMsg = data.reply || data.message || data.output || JSON.stringify(data);
         this.messages.push({ from: 'bot', text: botMsg });
       } catch (err) {
         console.error('Error al enviar el mensaje:', err);
@@ -130,6 +134,8 @@ class AIChatbot extends HTMLElement {
           flex-direction: column;
           overflow: hidden;
           z-index: 10000;
+        }
+        .chatbot-window.pop {
           animation: chatbot-pop 0.2s;
         }
         @keyframes chatbot-pop {
@@ -240,7 +246,7 @@ class AIChatbot extends HTMLElement {
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2d7ff9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>
             </div>
           ` : `
-            <div class="chatbot-window">
+            <div class="chatbot-window${this._justOpened ? ' pop' : ''}">
               <div class="chatbot-header">
                 <span>${this.title}</span>
                 <div>
@@ -250,7 +256,6 @@ class AIChatbot extends HTMLElement {
               </div>
               <div class="chatbot-messages">
                 ${this.messages.map(m => `<div class="chatbot-msg ${m.from}">${m.text}</div>`).join('')}
-                ${this.loading ? '<div class="chatbot-loader">Escribiendo...</div>' : ''}
               </div>
               <form class="chatbot-input-area">
                 <input class="chatbot-input" type="text" placeholder="Escribe tu mensaje..." autocomplete="off" ${this.loading ? 'disabled' : ''} />
@@ -269,6 +274,8 @@ class AIChatbot extends HTMLElement {
       if (form) form.onsubmit = (e) => this.sendMessage(e);
       const newConv = this.shadowRoot.querySelector('.chatbot-header-btn');
       if (newConv) newConv.onclick = () => this.newConversation();
+      // Resetear bandera de animación
+      this._justOpened = false;
     }
   }
   
