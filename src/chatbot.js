@@ -101,6 +101,18 @@ class AIChatbot extends HTMLElement {
   
     render() {
       const style = `
+        .chatbot-overlay {
+          display: ${this.isOpen ? 'block' : 'none'};
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(30,40,60,0.18);
+          z-index: 9998;
+          animation: fadeIn 0.2s;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
         .chatbot-bubble {
           position: fixed;
           bottom: 24px;
@@ -116,6 +128,7 @@ class AIChatbot extends HTMLElement {
           justify-content: center;
           cursor: pointer;
           transition: box-shadow 0.2s, transform 0.2s;
+          ${this.isOpen ? 'box-shadow: 0 8px 32px rgba(45,127,249,0.25); transform: scale(1.08) rotate(-6deg); pointer-events: none;' : ''}
         }
         .chatbot-bubble:hover {
           box-shadow: 0 8px 32px rgba(45,127,249,0.25);
@@ -159,6 +172,13 @@ class AIChatbot extends HTMLElement {
           color: #fff;
           font-size: 1.3em;
           cursor: pointer;
+          display: flex;
+          align-items: center;
+        }
+        .chatbot-close svg {
+          width: 1.5em;
+          height: 1.5em;
+          display: block;
         }
         .chatbot-messages {
           flex: 1;
@@ -220,50 +240,62 @@ class AIChatbot extends HTMLElement {
         }
         .chatbot-loader {
           text-align: center;
-          color: #888;
-          font-size: 0.95em;
           margin: 8px 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 24px;
         }
-        .chatbot-header-btn {
-          background: #fff2;
-          color: #fff;
-          border: none;
-          border-radius: 6px;
-          padding: 4px 10px;
-          margin-left: 8px;
-          font-size: 0.95em;
-          cursor: pointer;
-          transition: background 0.2s;
+        .chatbot-thinking {
+          display: inline-block;
+          width: 40px;
+          height: 16px;
         }
-        .chatbot-header-btn:hover {
-          background: #fff4;
+        .chatbot-thinking span {
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          margin: 0 2px;
+          background: #2d7ff9;
+          border-radius: 50%;
+          opacity: 0.5;
+          animation: thinking-bounce 1s infinite;
+        }
+        .chatbot-thinking span:nth-child(2) { animation-delay: 0.2s; }
+        .chatbot-thinking span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes thinking-bounce {
+          0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+          40% { transform: scale(1.2); opacity: 1; }
         }
       `;
       this.shadowRoot.innerHTML = `
         <style>${style}</style>
         <div>
-          ${!this.isOpen ? `
-            <div class="chatbot-bubble" title="Abrir chat" tabindex="0">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2d7ff9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>
-            </div>
-          ` : `
+          <div class="chatbot-overlay"></div>
+          <div class="chatbot-bubble" title="Abrir chat" tabindex="0">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2d7ff9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>
+          </div>
+          ${this.isOpen ? `
             <div class="chatbot-window${this._justOpened ? ' pop' : ''}">
               <div class="chatbot-header">
                 <span>${this.title}</span>
                 <div>
                   <button class="chatbot-header-btn" title="Nueva conversación">⟳</button>
-                  <button class="chatbot-close" title="Cerrar">&times;</button>
+                  <button class="chatbot-close" title="Cerrar">
+                    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
                 </div>
               </div>
               <div class="chatbot-messages">
                 ${this.messages.map(m => `<div class="chatbot-msg ${m.from}">${m.text}</div>`).join('')}
+                ${this.loading ? `<div class="chatbot-loader"><span class="chatbot-thinking"><span></span><span></span><span></span></span></div>` : ''}
               </div>
               <form class="chatbot-input-area">
                 <input class="chatbot-input" type="text" placeholder="Escribe tu mensaje..." autocomplete="off" ${this.loading ? 'disabled' : ''} />
                 <button class="chatbot-send" type="submit" ${this.loading ? 'disabled' : ''}>Enviar</button>
               </form>
             </div>
-          `}
+          ` : ''}
         </div>
       `;
       // Eventos
@@ -275,6 +307,9 @@ class AIChatbot extends HTMLElement {
       if (form) form.onsubmit = (e) => this.sendMessage(e);
       const newConv = this.shadowRoot.querySelector('.chatbot-header-btn');
       if (newConv) newConv.onclick = () => this.newConversation();
+      // Overlay click para cerrar
+      const overlay = this.shadowRoot.querySelector('.chatbot-overlay');
+      if (overlay) overlay.onclick = () => { if (this.isOpen) this.toggleChat(); };
       // Resetear bandera de animación
       this._justOpened = false;
     }
