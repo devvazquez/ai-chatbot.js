@@ -84,6 +84,7 @@ class AIChatbot extends HTMLElement {
         let botMsg = data.reply || data.message || JSON.stringify(data);
         this.messages.push({ from: 'bot', text: botMsg });
       } catch (err) {
+        console.error('Error al enviar el mensaje:', err);
         this.messages.push({ from: 'bot', text: 'Error de conexión.' });
       }
       this.loading = false;
