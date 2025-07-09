@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo AI Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .demo-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .feature {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #2d7ff9;
+        }
+        .feature h3 {
+            color: #2d7ff9;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Chatbot - Demo</h1>
+        
+        <div class="demo-section">
+            <h2>Características Principales</h2>
+            <div class="feature-list">
+                <div class="feature">
+                    <h3>🎯 Web Component</h3>
+                    <p>Componente web estándar que se integra fácilmente en cualquier sitio.</p>
+                </div>
+                <div class="feature">
+                    <h3>📱 Responsive</h3>
+                    <p>Diseño adaptativo que funciona en móviles y escritorio.</p>
+                </div>
+                <div class="feature">
+                    <h3>⚡ Rápido</h3>
+                    <p>Código optimizado y minificado para máxima velocidad.</p>
+                </div>
+                <div class="feature">
+                    <h3>🎨 Personalizable</h3>
+                    <p>Fácil de configurar con atributos HTML simples.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📋 Código de Ejemplo</h2>
+            <div class="code">
+&lt;!-- Incluir el script --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/ai-chatbot@1.0.0/dist/ai-chatbot.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Usar el chatbot --&gt;
+&lt;ai-chatbot 
+    title="Mi Asistente"
+    webhook="https://tu-api.com/chat"
+    first-messages="¡Hola! ¿En qué puedo ayudarte?|Estoy aquí para asistirte"&gt;
+&lt;/ai-chatbot&gt;
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🔧 Configuración</h2>
+            <p>El chatbot se puede configurar con estos atributos:</p>
+            <ul>
+                <li><strong>title</strong>: Título del chatbot</li>
+                <li><strong>webhook</strong>: URL del endpoint para procesar mensajes</li>
+                <li><strong>first-messages</strong>: Mensajes iniciales separados por |</li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h2>📡 API del Webhook</h2>
+            <p>El chatbot envía peticiones POST con este formato:</p>
+            <div class="code">
+{
+  "sessionId": "sess-abc123def",
+  "action": "sendMessage", 
+  "chatInput": "Mensaje del usuario"
+}
+            </div>
+            <p>Y espera una respuesta como:</p>
+            <div class="code">
+{
+  "reply": "Respuesta del bot"
+}
+            </div>
+        </div>
+    </div>
+
+    <!-- Incluir el script del chatbot -->
+    <script src="dist/ai-chatbot.min.js"></script>
+    
+    <!-- Usar el chatbot -->
+    <ai-chatbot 
+        title="Demo Asistente"
+        webhook="https://httpbin.org/post"
+        first-messages="¡Hola! Soy el asistente de demo|¿En qué puedo ayudarte hoy?|Este es un ejemplo de cómo funciona el chatbot">
+    </ai-chatbot>
+</body>
+</html> 

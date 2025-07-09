@@ -1,0 +1,24 @@
+{
+  "name": "ai-chatbot",
+  "version": "1.0.0",
+  "description": "Un chatbot de IA personalizable como Web Component",
+  "main": "dist/ai-chatbot.min.js",
+  "files": [
+    "dist/ai-chatbot.min.js",
+    "src/chatbot.js"
+  ],
+  "keywords": [
+    "chatbot",
+    "ai",
+    "web-component",
+    "javascript",
+    "html"
+  ],
+  "author": "devvazquez",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devvazquez/ai-chatbot.js.git"
+  },
+  "homepage": "https://github.com/devvazquez/ai-chatbot.js#readme"
+}   
