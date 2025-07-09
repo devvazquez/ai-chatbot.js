@@ -17,6 +17,8 @@ class AIChatbot extends HTMLElement {
     }
   
     attributeChangedCallback(name, oldValue, newValue) {
+      // Solo actualiza si el valor realmente cambió
+      if (oldValue === newValue) return;
       if (name === 'title') this.title = newValue;
       if (name === 'webhook') this.webhook = newValue;
       if (name === 'first-messages') this.firstMessages = newValue;
